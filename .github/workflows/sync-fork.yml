@@ -2,7 +2,7 @@ name: Sync Fork with Upstream Dextor.io
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Runs every 6 hours
+    - cron: '* * * * *'  # Runs every minute (this is the minimum GitHub Actions allows)
   workflow_dispatch:  # Allows manual trigger
 
 jobs:
