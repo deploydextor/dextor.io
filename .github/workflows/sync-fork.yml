@@ -1,0 +1,36 @@
+name: Sync Upstream Repository
+
+on:
+  schedule:
+    # Run once a day at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the forked repository
+        uses: actions/checkout@v3
+        with:
+          # This will fetch all branches and tags for the repo
+          fetch-depth: 0
+
+      - name: Add Upstream Repository
+        run: |
+          git remote add upstream https://github.com/dextor-io/labs.dextor.io.git
+          git fetch upstream
+
+      - name: Merge Upstream Changes
+        run: |
+          git checkout main
+          git merge upstream/main --allow-unrelated-histories
+        continue-on-error: true
+
+      - name: Push Changes to Forked Repository
+        run: |
+          git push origin main
+        env:
+          # Setting up GitHub token to push changes
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
